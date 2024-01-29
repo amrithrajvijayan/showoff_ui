@@ -321,7 +321,7 @@ const deleteWidgetComponent = showDeleteOption ? (
 
         Following are the widgets which are in disabled state right now. You may enable them using the 'Enable' action or delete them using 'Delete' action.
 
-        <table width='70%'>
+        <table className="disabled-table" width='70%'>
           <tbody>
             <tr>
               <th>Name</th>

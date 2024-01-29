@@ -27,26 +27,40 @@ function ActiveWidgets() {
   }).map((widget: WidgetInfo) => {
     return (
       <div className='child shadow' key={widget.id}>
-        <table>
-          <tbody>
-            <tr>
-              <td>Name</td>
-              <td>{widget.name}</td>
-            </tr>
-            <tr>
-              <td>Description</td>
-              <td>{widget.description}</td>
-            </tr>
-            <tr>
-              <td>Status</td>
-              <td>{widget.status ? 'true' : 'false'}</td>
-            </tr>
-            <tr>
-              <td>Created At</td>
-              <td>{Moment(widget.created_at).format('LLLL')}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="widget-header-text"><b>Widget {widget.id}</b></div>
+
+        <div className="container">
+          <div className="row">
+            <div className="left">
+              <p>Name: </p>
+            </div>
+            <div className="right">
+              <p><b>{widget.name}</b></p>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="left">
+              <p>Description: </p>
+            </div>
+            <div className="right">
+              <p><b>{widget.description}</b></p>
+            </div>
+          </div>
+
+
+          <div className="row">
+            <div className="left">
+              <p>Created At: </p>
+            </div>
+            <div className="right">
+              <p><b>{widget.created_at}</b></p>
+            </div>
+          </div>
+
+
+        </div>
+
       </div>
     );
   })

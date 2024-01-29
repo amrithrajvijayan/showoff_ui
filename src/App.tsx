@@ -1,5 +1,4 @@
-import React from 'react';
-import logo from './logo.svg';
+
 import './App.css';
 import { Outlet, Link } from "react-router-dom";
 import ActiveWidgets from './widgets/ActiveWidgets';
@@ -29,9 +28,6 @@ function App() {
       </nav>
     </div>
     <div>
-      <h1><center>
-        Widgets Dashboard</center>
-      </h1>
     </div>
       <Outlet />
 
