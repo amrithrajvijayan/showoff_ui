@@ -1,0 +1,45 @@
+
+
+.parent{
+    display: inline-flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.child{
+    width: 250px;
+    height: 200px;
+    margin: 10px;
+    background-color: gray;
+}
+
+.newWidgetDiv {
+    width: 100%;
+    align-content: center;
+    margin: 30px;
+    display: flex;
+    justify-content: center;    
+}
+
+.master-div { 
+    padding-left : 20px;
+}
+
+.message-div { 
+    width: 100%;
+    align-content: center;
+    margin: 30px;
+    display: flex;
+    justify-content: center;    
+    color: red;
+}
+
+.shadow {
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 5px 10px #888888;
+  }
+
+  h3 {
+    color: cyan
+  }
