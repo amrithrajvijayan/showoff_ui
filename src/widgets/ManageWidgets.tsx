@@ -285,6 +285,7 @@ const deleteWidgetComponent = showDeleteOption ? (
       {messageComponent}
       <div>
         <h2>Manage Widgets</h2>
+        <hr></hr>
         Manage your widgets in this page.
       </div>
 
