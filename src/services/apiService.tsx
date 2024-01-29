@@ -1,6 +1,6 @@
 import WidgetInfo from "../models/WidgetInfoInterface";
 
-const API_URL = process.env.REACT_APP_WIDGETS_API_URL ?? ''; //http://localhost:3000/widgets/';
+const API_URL = process.env.REACT_APP_WIDGETS_API_URL ?? 'http://localhost:3000/widgets/';
 
 const fetchAllWidgets = function(): Promise<Response> {
     return fetch(API_URL);
