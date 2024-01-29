@@ -5,6 +5,8 @@ import WidgetInfo from '../models/WidgetInfoInterface';
 import { fetchAllWidgets, enableDisableWidget, deleteWidget, createWidget, updateWidget } from '../services/apiService';
 import Moment from 'moment';
 
+const SHOW_MESSAGE_TIMEOUT = 3000;
+
 function ManageWidgets() {
 
   const [data, setData] = useState([]);
@@ -61,7 +63,7 @@ function ManageWidgets() {
 
   function showMessage(message: string) {
     setMessage(message);
-    setTimeout(() => setMessage(''), 5000);
+    setTimeout(() => setMessage(''), SHOW_MESSAGE_TIMEOUT);
   }
 
   function saveWidget() {
@@ -76,7 +78,7 @@ function ManageWidgets() {
       }
       updateWidget(newWidget).then((response) => {
         refreshWidgetsInfo();
-        showMessage("Widget updated successfully");
+        showMessage("Widget '" + widgetName + "' updated successfully");
       })
       setShowNewWidgetUI(false);
       setShowEditOption(false);
@@ -96,7 +98,7 @@ function ManageWidgets() {
       setId(id + 1);
       createWidget(newWidget).then((response) => {
         refreshWidgetsInfo();
-        showMessage("Widget created successfully");
+        showMessage("Widget '" + widgetName + "' created successfully");
       })
       setShowNewWidgetUI(false);
     }
@@ -116,11 +118,17 @@ function ManageWidgets() {
 
     switch (targetOp) {
       case 'disable': {
-        enableDisableWidget(widget, false).then(() => refreshWidgetsInfo());
+        enableDisableWidget(widget, false).then(() => {
+          showMessage('Widget \'' + widget.name + '\' disabled.')
+          refreshWidgetsInfo()
+        });
         break;
       }
       case 'enable': {
-        enableDisableWidget(widget, true).then(() => refreshWidgetsInfo());
+        enableDisableWidget(widget, true).then(() => {
+          refreshWidgetsInfo()
+          showMessage('Widget \'' + widget.name + '\' enabled.')
+        });
         break;
       }
       case 'delete': {
@@ -173,21 +181,23 @@ function ManageWidgets() {
 
   const newWidgetCompnent = showNewWidgetUI ? (
     <div className="newWidgetDiv">
-      <table border={1} width="50%">
-        <tr>
-          <td align="center" colSpan={2}><h4>Create New Widget</h4></td>
-        </tr>
-        <tr>
-          <td width="30%">Name</td>
-          <td><input type="text" size={50} onChange={(event) => setWidgetName(event.target.value)}></input></td>
-        </tr>
-        <tr>
-          <td>Description</td>
-          <td><textarea rows={3} maxLength={150} onChange={(event) => setWidgetDescription(event.target.value)}></textarea></td>
-        </tr>
-        <tr>
-          <td align="center" height={35} colSpan={2}><button onClick={addNewWidget}>Create</button> <button onClick={closeWidgetForms}>Close</button></td>
-        </tr>
+      <table width="50%">
+        <tbody>
+          <tr>
+            <td align="center" colSpan={2}><h2>Create New Widget</h2></td>
+          </tr>
+          <tr>
+            <td width="30%">Widget Name</td>
+            <td><input type="text" size={50} onChange={(event) => setWidgetName(event.target.value)}></input></td>
+          </tr>
+          <tr>
+            <td>Widget Description</td>
+            <td><textarea rows={3} cols={40} onChange={(event) => setWidgetDescription(event.target.value)}></textarea></td>
+          </tr>
+          <tr>
+            <td align="center" height={35} colSpan={2}><button onClick={addNewWidget}>Create</button> <button onClick={closeWidgetForms}>Close</button></td>
+          </tr>
+        </tbody>
       </table>
     </div>) : '';
 
@@ -201,21 +211,23 @@ function ManageWidgets() {
       </div>
 
       <div className="newWidgetDiv">
-        <table border={1} width="50%">
-          <tr>
-            <td align="center" colSpan={2}><h4>Edit Widget</h4></td>
-          </tr>
-          <tr>
-            <td width="30%">Name</td>
-            <td><input type="text" size={50} onChange={(event) => setWidgetName(event.target.value)} value={widgetName}></input></td>
-          </tr>
-          <tr>
-            <td>Description</td>
-            <td><textarea rows={3} maxLength={150} onChange={(event) => setWidgetDescription(event.target.value)} value={widgetDescription}></textarea></td>
-          </tr>
-          <tr>
-            <td align="center" height={35} colSpan={2}><button onClick={saveWidget}>Save</button> <button onClick={closeWidgetForms}>Close</button></td>
-          </tr>
+        <table width="50%">
+          <tbody>
+            <tr>
+              <td align="center" colSpan={2}><h2>Edit Widget</h2></td>
+            </tr>
+            <tr>
+              <td width="30%">Name</td>
+              <td><input type="text" size={50} onChange={(event) => setWidgetName(event.target.value)} value={widgetName}></input></td>
+            </tr>
+            <tr>
+              <td>Description</td>
+              <td><textarea rows={3} maxLength={150} onChange={(event) => setWidgetDescription(event.target.value)} value={widgetDescription}></textarea></td>
+            </tr>
+            <tr>
+              <td align="center" height={35} colSpan={2}><button onClick={saveWidget}>Save</button> <button onClick={closeWidgetForms}>Close</button></td>
+            </tr>
+          </tbody>
         </table>
       </div></div>) : '';
 
@@ -227,16 +239,15 @@ function ManageWidgets() {
 
   return (
     <div className="master-div">
+      {messageComponent}
       <div>
         <h2>Manage Widgets</h2>
-        Manage the widgets in this screen.
+        Manage your widgets in this page.
       </div>
-
-      {messageComponent}
 
       <div>
         <h3>Create New Widgets</h3>
-        Use the 'Create Widget' button in order to create new widgets. &nbsp;
+        Use the 'Create Widget' action in order to create new widgets. &nbsp;
         <button onClick={showCreateNewWidgetForm}>Create Widget</button>
       </div>
 
@@ -247,14 +258,16 @@ function ManageWidgets() {
         <h3>Enabled Widgets</h3>
         Following are the widgets which are in enabled state right now. You may disable them using the 'Disable' action or delete them using 'Delete' action.
 
-        <table border={1} width='70%'>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
-          {activeWidgetsTableRows}
+        <table width='70%'>
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+            {activeWidgetsTableRows}
+          </tbody>
         </table>
 
       </div>
@@ -264,14 +277,16 @@ function ManageWidgets() {
 
         Following are the widgets which are in disabled state right now. You may enable them using the 'Enable' action or delete them using 'Delete' action.
 
-        <table border={1} width='70%'>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
-          {disabledTableRows}
+        <table width='70%'>
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+            {disabledTableRows}
+          </tbody>
         </table>
 
 

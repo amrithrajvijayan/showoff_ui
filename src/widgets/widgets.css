@@ -43,3 +43,25 @@
   h3 {
     color: cyan
   }
+
+  h2 {
+    color: red
+  }
+
+  .error-message {
+    display: flex;
+    justify-content: center;    
+    color: red;    
+  }
+
+  table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  td {
+    height: 30px;
+    padding-left: 10px;
+  }
