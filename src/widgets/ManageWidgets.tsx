@@ -16,12 +16,13 @@ function ManageWidgets() {
   const [id, setId] = useState(0);
   const [message, setMessage] = useState('');
   const [showEditOption, setShowEditOption] = useState(false);
-  const [widgetToSave, setWidgetToSave] = useState({
+  const [widgetForAction, setWidgetForAction] = useState({
     id: 0,
     name: '',
     description: '',
     status: false
   });
+  const [showDeleteOption, setShowDeleteOption] = useState(false);
 
   Moment.locale('en');
 
@@ -52,6 +53,7 @@ function ManageWidgets() {
     setWidgetDescription('');
     setShowNewWidgetUI(true);
     setShowEditOption(false);
+    setShowDeleteOption(false);
   }
 
   function closeWidgetForms() {
@@ -59,6 +61,7 @@ function ManageWidgets() {
     setWidgetDescription('');
     setShowNewWidgetUI(false);
     setShowEditOption(false);
+    setShowDeleteOption(false);
   }
 
   function showMessage(message: string) {
@@ -71,10 +74,10 @@ function ManageWidgets() {
       showMessage("Please provide required inputs");
     } else {
       const newWidget: WidgetInfo = {
-        id: widgetToSave.id,
+        id: widgetForAction.id,
         name: widgetName,
         description: widgetDescription,
-        status: widgetToSave.status ?? false,
+        status: widgetForAction.status ?? false,
       }
       updateWidget(newWidget).then((response) => {
         refreshWidgetsInfo();
@@ -107,14 +110,20 @@ function ManageWidgets() {
   function edit(widget: WidgetInfo) {
     setWidgetName(widget.name);
     setWidgetDescription(widget.description);
-    setWidgetToSave(widget);
+    setWidgetForAction(widget);
     setShowEditOption(true);
+    setShowDeleteOption(false);
     setShowNewWidgetUI(false);
+  }
+
+  function closeDeleteForm() {
+    setShowDeleteOption(false);
   }
 
   function performAction(targetOp: string, widget: WidgetInfo) {
     setShowNewWidgetUI(false);
     setShowEditOption(false);
+    setShowDeleteOption(false);
 
     switch (targetOp) {
       case 'disable': {
@@ -132,16 +141,24 @@ function ManageWidgets() {
         break;
       }
       case 'delete': {
-        deleteWidget(widget).then(() => {
-          refreshWidgetsInfo()
-          showMessage("Widget deleted successfully");
-        });
+        setShowDeleteOption(true);
+        setWidgetName(widget.name);
+        setWidgetDescription(widget.description);
+        setWidgetForAction(widget);
         break;
       }
       case 'edit': {
         edit(widget);
       }
     }
+  }
+
+  function performDeleteWidget() {
+    deleteWidget(widgetForAction).then(() => {
+      refreshWidgetsInfo()
+      showMessage("Widget deleted successfully");
+      setShowDeleteOption(false);
+    });
   }
 
   const activeWidgetsTableRows = data.filter((widget: WidgetInfo) => {
@@ -203,7 +220,6 @@ function ManageWidgets() {
 
 
   const editWidgetComponent = showEditOption ? (
-
     <div>
       <div>
         <h3>Edit Widgets</h3>
@@ -232,6 +248,33 @@ function ManageWidgets() {
       </div></div>) : '';
 
 
+const deleteWidgetComponent = showDeleteOption ? (
+  <div>
+    <div>
+      <h3>Delete Widget</h3>
+    </div>
+
+    <div className="newWidgetDiv">
+      <table width="50%">
+        <tbody>
+          <tr>
+            <td align="center" colSpan={2}><h2>Are you sure you want to delete below Widget?</h2></td>
+          </tr>
+          <tr>
+            <td width="30%">Name</td>
+            <td><input type="text" size={50} value={widgetName}></input></td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td><textarea rows={3} maxLength={150} value={widgetDescription}></textarea></td>
+          </tr>
+          <tr>
+            <td align="center" height={35} colSpan={2}><button onClick={performDeleteWidget}>Delete</button> <button onClick={closeDeleteForm}>Cancel</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>) : '';
+
   const messageComponent = message === '' ? '' : (
     <div className="message-div">
       <h3>{message}</h3>
@@ -253,6 +296,7 @@ function ManageWidgets() {
 
       {newWidgetCompnent}
       {editWidgetComponent}
+      {deleteWidgetComponent}
 
       <div>
         <h3>Enabled Widgets</h3>
